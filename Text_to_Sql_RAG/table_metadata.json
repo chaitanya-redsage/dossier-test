@@ -1,0 +1,1102 @@
+{
+  "hc.admission": {
+    "description": "Represents a patient admission record linked to an encounter, capturing admission and discharge timestamps, assigned bed, and discharge disposition.",
+    "tags": [
+      "patient_admission",
+      "encounter",
+      "bed_assignment",
+      "hospital",
+      "discharge",
+      "admission_record"
+    ]
+  },
+  "hc.appointment": {
+    "description": "The appointment table records scheduled healthcare encounters, linking patients, facilities, departments, and optionally providers with start/end times and status indicators.",
+    "tags": [
+      "appointment",
+      "scheduling",
+      "healthcare",
+      "patient_management",
+      "provider_schedule",
+      "facility_management"
+    ]
+  },
+  "hc.bed": {
+    "description": "Represents a bed within a hospital room, including its active status.",
+    "tags": [
+      "hospital_bed",
+      "room_association",
+      "inventory",
+      "status",
+      "bed_management"
+    ]
+  },
+  "hc.charge_item": {
+    "description": "Represents individual billing charge items linked to patient encounters.",
+    "tags": [
+      "billing",
+      "healthcare",
+      "charge_item",
+      "encounter",
+      "financial",
+      "medical_records"
+    ]
+  },
+  "hc.claim": {
+    "description": "Represents an insurance claim submitted for a patient’s encounter, linking to the patient, the health plan, and the specific encounter, and recording billing and payment amounts.",
+    "tags": [
+      "insurance_claim",
+      "billing",
+      "healthcare",
+      "patient_records"
+    ]
+  },
+  "hc.claim_line": {
+    "description": "Represents a line item within a healthcare claim, detailing billed, allowed, and paid amounts, and any denial reason.",
+    "tags": [
+      "healthcare",
+      "claims",
+      "billing",
+      "line_item",
+      "denial",
+      "financial"
+    ]
+  },
+  "hc.department": {
+    "description": "A table describing individual departments within a healthcare facility, including the department’s unique ID, the facility it belongs to, its name, and type.",
+    "tags": [
+      "department",
+      "healthcare",
+      "facility",
+      "organization"
+    ]
+  },
+  "hc.diagnosis": {
+    "description": "This table stores diagnoses associated with patient encounters, including ICD‑10 codes, descriptions, and the type of diagnosis, and tracks which provider recorded each diagnosis.",
+    "tags": [
+      "clinical_diagnosis",
+      "encounter_association",
+      "provider_recorded",
+      "icd10_code",
+      "healthcare_data"
+    ]
+  },
+  "hc.employee": {
+    "description": "Represents employee records linking a person to a facility, including employment details.",
+    "tags": [
+      "employee_management",
+      "personnel",
+      "facility_assignment",
+      "employment_record",
+      "active_status",
+      "hire_date",
+      "role_type"
+    ]
+  },
+  "hc.encounter": {
+    "description": "Represents individual patient encounters within a healthcare facility, including timing, provider, and disposition details.",
+    "tags": [
+      "health_care",
+      "patient_encounter",
+      "facility",
+      "department",
+      "provider",
+      "visit",
+      "appointment"
+    ]
+  },
+  "hc.facility": {
+    "description": "A record of a facility linked to an organization, storing its name, type, and location details.",
+    "tags": [
+      "health_care",
+      "facility",
+      "organization",
+      "location",
+      "address",
+      "metadata"
+    ]
+  },
+  "hc.imaging_order": {
+    "description": "Imaging_order records the orders placed for medical imaging procedures linked to a specific patient encounter, including the imaging modality, target body part, ordering provider, and order status.",
+    "tags": [
+      "imaging_order",
+      "radiology",
+      "order",
+      "encounter",
+      "provider",
+      "modality",
+      "body_part"
+    ]
+  },
+  "hc.imaging_report": {
+    "description": "Stores radiology imaging reports linked to imaging orders, including findings, impressions, and the reporting radiologist.",
+    "tags": [
+      "imaging",
+      "radiology",
+      "report",
+      "provider",
+      "medical_record",
+      "order"
+    ]
+  },
+  "hc.inventory_balance": {
+    "description": "Represents the on-hand quantity and reorder threshold for each item at a specific inventory location.",
+    "tags": [
+      "inventory_balance",
+      "item_stock",
+      "inventory_location",
+      "reorder_point",
+      "stock_keeping"
+    ]
+  },
+  "hc.inventory_location": {
+    "description": "Represents inventory location records linked to a facility and optional department, with a unique identifier and descriptive name.",
+    "tags": [
+      "inventory_location",
+      "facility_id",
+      "department_id",
+      "inventory_management",
+      "location"
+    ]
+  },
+  "hc.inventory_txn": {
+    "description": "Records inventory transactions, linking location, item, transaction type, quantity, and time, optionally associated with an encounter.",
+    "tags": [
+      "inventory_management",
+      "transaction_log",
+      "healthcare",
+      "inventory_location",
+      "item",
+      "quantity"
+    ]
+  },
+  "hc.item": {
+    "description": "Represents individual items in a catalog, each linked to a vendor, with SKU, name, category, and unit cost information.",
+    "tags": [
+      "product_catalog",
+      "item",
+      "vendor_reference",
+      "sku",
+      "unit_cost"
+    ]
+  },
+  "hc.lab_order": {
+    "description": "A table storing laboratory orders linked to patient encounters, including the ordering provider, test details, timestamp, and status.",
+    "tags": [
+      "lab_order",
+      "healthcare",
+      "clinical",
+      "lab",
+      "encounter",
+      "provider"
+    ]
+  },
+  "hc.lab_result": {
+    "description": "Represents individual laboratory test results linked to a lab order, including test values, units, reference ranges, and abnormality flags.",
+    "tags": [
+      "lab",
+      "lab_result",
+      "analyte",
+      "numeric_value",
+      "abnormal_flag",
+      "timestamp",
+      "healthcare"
+    ]
+  },
+  "hc.med_admin": {
+    "description": "Records of medication administrations linked to orders, including who administered, when, and dosage.",
+    "tags": [
+      "medication_administration",
+      "med_order_link",
+      "employee",
+      "timestamp",
+      "dosage",
+      "healthcare_records"
+    ]
+  },
+  "hc.med_order": {
+    "description": "Represents a medication order issued during a patient encounter, including dosage, route, and schedule information.",
+    "tags": [
+      "healthcare",
+      "medication_order",
+      "encounter",
+      "provider",
+      "pharmacy"
+    ]
+  },
+  "hc.org": {
+    "description": "Table storing organization records with an ID, name, type, and creation timestamp.",
+    "tags": [
+      "organization",
+      "org_type",
+      "created_at",
+      "metadata"
+    ]
+  },
+  "hc.patient": {
+    "description": "Table storing patient-level information, linking to a person record and tracking medical record number, death time, and record creation.",
+    "tags": [
+      "patient",
+      "person",
+      "medical_record_number",
+      "deceased_status",
+      "created_at",
+      "healthcare",
+      "record"
+    ]
+  },
+  "hc.patient_insurance": {
+    "description": "Table stores insurance coverage information for patients, linking each patient to an insurance plan and recording coverage period and primary status.",
+    "tags": [
+      "patient_insurance",
+      "health_care",
+      "insurance",
+      "coverage",
+      "patient_plan",
+      "primary_insurance"
+    ]
+  },
+  "hc.payer": {
+    "description": "Represents a payer entity with an ID, name, and type.",
+    "tags": [
+      "payer",
+      "financial",
+      "entity",
+      "billing",
+      "generic"
+    ]
+  },
+  "hc.payment": {
+    "description": "Represents payments made for insurance claims, including the amount, payment method, and timestamp.",
+    "tags": [
+      "payment",
+      "claim_related",
+      "insurance",
+      "financial_records",
+      "transaction"
+    ]
+  },
+  "hc.person": {
+    "description": "Represents an individual with basic demographic and contact information.",
+    "tags": [
+      "person",
+      "demographics",
+      "contact_info",
+      "personal_details"
+    ]
+  },
+  "hc.plan": {
+    "description": "The hc.plan table stores information about insurance plans, linking each plan to a specific payer via payer_id.",
+    "tags": [
+      "health_care",
+      "insurance_plan",
+      "payer_relationship",
+      "plan_catalog"
+    ]
+  },
+  "hc.procedure_event": {
+    "description": "Records procedures performed during patient encounters, linking each event to an encounter, provider, CPT code, and timestamp.",
+    "tags": [
+      "healthcare",
+      "procedure_event",
+      "encounter_related",
+      "billing_cpt",
+      "provider_activity"
+    ]
+  },
+  "hc.provider": {
+    "description": "Represents healthcare providers linked to employee records, storing provider identifiers, NPI numbers, and specialties.",
+    "tags": [
+      "healthcare_provider",
+      "employee_link",
+      "npi",
+      "specialty",
+      "provider_info"
+    ]
+  },
+  "hc.referral": {
+    "description": "Table storing medical referral records linking patients, referring providers, and target departments, with the reason for referral and timestamp of creation.",
+    "tags": [
+      "referral",
+      "patient",
+      "provider",
+      "department",
+      "healthcare",
+      "medical",
+      "tracking"
+    ]
+  },
+  "hc.room": {
+    "description": "Represents individual rooms associated with a department.",
+    "tags": [
+      "room",
+      "department",
+      "facility_location",
+      "hospital",
+      "college"
+    ]
+  },
+  "hc.vendor": {
+    "description": "Represents a vendor entity with a unique identifier and a name.",
+    "tags": [
+      "vendor",
+      "business_entity",
+      "identifier",
+      "name"
+    ]
+  },
+  "hc.vital_sign": {
+    "description": "Table storing vital sign measurements taken during a patient encounter.",
+    "tags": [
+      "healthcare",
+      "patient_records",
+      "vital_signs",
+      "encounter_data",
+      "clinical_measurements"
+    ]
+  },
+  "hc.allergy": {
+    "description": "Table storing allergy identifiers and their associated substances.",
+    "tags": [
+      "medical",
+      "allergy",
+      "reference",
+      "healthcare"
+    ]
+  },
+  "hc.api_key": {
+    "description": "Stores API key information for application users, including hash, creation, expiration, and revocation timestamps.",
+    "tags": [
+      "api_key",
+      "authentication",
+      "user",
+      "security",
+      "token",
+      "expiration"
+    ]
+  },
+  "hc.app_user": {
+    "description": "Table storing authentication credentials for application users, linking to personal details if available.",
+    "tags": [
+      "auth",
+      "user",
+      "account",
+      "authentication",
+      "security"
+    ]
+  },
+  "hc.appointment_note": {
+    "description": "A record of notes entered for a specific appointment, optionally authored by a staff member.",
+    "tags": [
+      "appointment_notes",
+      "clinical_records",
+      "healthcare",
+      "staff_notes"
+    ]
+  },
+  "hc.audit_log": {
+    "description": "A table that records audit events, capturing when an action occurred, who performed it, what action was taken on which entity, and additional details.",
+    "tags": [
+      "audit",
+      "logging",
+      "event_tracking",
+      "compliance",
+      "security"
+    ]
+  },
+  "hc.bed_assignment": {
+    "description": "Records assignment of a bed to a patient admission, including timestamps for assignment and unassignment.",
+    "tags": [
+      "bed_assignment",
+      "patient_admission",
+      "hospital_bed_management",
+      "timestamped_events"
+    ]
+  },
+  "hc.care_plan": {
+    "description": "Represents a care plan associated with a patient, optionally linked to a specific encounter and created by a provider.",
+    "tags": [
+      "care_plan",
+      "patient_care",
+      "encounter",
+      "provider",
+      "healthcare"
+    ]
+  },
+  "hc.care_plan_goal": {
+    "description": "A goal linked to a care plan, detailing the objective text, optional target date, and current status.",
+    "tags": [
+      "care_plan",
+      "goal",
+      "healthcare",
+      "patient_care"
+    ]
+  },
+  "hc.care_plan_intervention": {
+    "description": "Table storing individual interventions linked to a specific care plan, including description, frequency, and status.",
+    "tags": [
+      "healthcare",
+      "care_plans",
+      "interventions",
+      "patient_management",
+      "medical_records"
+    ]
+  },
+  "hc.care_team": {
+    "description": "Represents a care team associated with a patient.",
+    "tags": [
+      "healthcare",
+      "patient",
+      "care_team",
+      "clinical"
+    ]
+  },
+  "hc.care_team_member": {
+    "description": "This table represents the association of individuals to a care team, identifying whether each member is a provider or staff and specifying their role within the team.",
+    "tags": [
+      "healthcare",
+      "care_team",
+      "member",
+      "role",
+      "provider",
+      "staff"
+    ]
+  },
+  "hc.clinical_note": {
+    "description": "Stores clinical notes associated with patient encounters, including author information, note type, and the note content.",
+    "tags": [
+      "clinical_notes",
+      "patient_records",
+      "healthcare",
+      "encounter_notes",
+      "provider_author"
+    ]
+  },
+  "hc.device": {
+    "description": "Table storing information about individual devices.",
+    "tags": [
+      "device_info",
+      "inventory",
+      "hardware",
+      "equipment",
+      "asset_management"
+    ]
+  },
+  "hc.device_assignment": {
+    "description": "Records assignments of medical devices to patients or encounters, including timestamps for assignment and unassignment.",
+    "tags": [
+      "device_assignment",
+      "medical_device_tracking",
+      "patient_care",
+      "encounter_tracking",
+      "healthcare_records",
+      "asset_management"
+    ]
+  },
+  "hc.device_reading": {
+    "description": "A table storing individual measurements or readings collected from medical devices, linked optionally to a patient, encounter, or device record.",
+    "tags": [
+      "device_readings",
+      "telemetry",
+      "healthcare_data",
+      "patient_monitoring",
+      "vitals",
+      "encounter_association"
+    ]
+  },
+  "hc.diagnosis_note_link": {
+    "description": "Links clinical notes to diagnoses, representing an association between a diagnostic record and its corresponding clinical note.",
+    "tags": [
+      "clinical_note",
+      "diagnosis",
+      "link",
+      "healthcare",
+      "medical_records",
+      "relationship"
+    ]
+  },
+  "hc.diet_order": {
+    "description": "Stores dietary orders placed for patients during specific encounters, including the ordering provider, order timestamp, diet type, and optional notes.",
+    "tags": [
+      "diet_order",
+      "encounter_related",
+      "nutrition_plan",
+      "provider_order",
+      "healthcare_record"
+    ]
+  },
+  "hc.discharge": {
+    "description": "A record of patient discharges, linked to an admission and capturing the time of discharge, disposition, and a summary of the event.",
+    "tags": [
+      "hospital_management",
+      "patient_discharge",
+      "admission",
+      "clinical_records"
+    ]
+  },
+  "hc.document": {
+    "description": "Stores documents that may be linked to a patient, a facility, or an uploading user, along with the document type, title, and upload timestamp.",
+    "tags": [
+      "healthcare",
+      "documents",
+      "patient_records",
+      "facility_documents",
+      "user_uploads"
+    ]
+  },
+  "hc.document_share": {
+    "description": "Records when a document is shared with a user or provider, including the sharing timestamp and an optional note.",
+    "tags": [
+      "document_sharing",
+      "sharing_history",
+      "user_access",
+      "provider_access",
+      "audit_log"
+    ]
+  },
+  "hc.document_tag": {
+    "description": "Associates documents with tags via a many-to-many relationship.",
+    "tags": [
+      "document_tagging",
+      "many_to_many",
+      "reference_table",
+      "metadata",
+      "tagging"
+    ]
+  },
+  "hc.document_version": {
+    "description": "Stores metadata for each version of a document, including its storage location, checksum, and creation timestamp.",
+    "tags": [
+      "document_versioning",
+      "storage_uri",
+      "checksum",
+      "audit_trail",
+      "document_management"
+    ]
+  },
+  "hc.encounter_diagnosis": {
+    "description": "Represents the association between a patient encounter and its diagnoses, indicating the order of diagnoses and whether each was present upon admission.",
+    "tags": [
+      "healthcare",
+      "encounter",
+      "diagnosis",
+      "mapping",
+      "medical_records",
+      "presence_on_admission",
+      "ranking"
+    ]
+  },
+  "hc.encounter_document": {
+    "description": "Associates medical encounters with related documents, serving as a join table.",
+    "tags": [
+      "encounter_document",
+      "join_table",
+      "medical_records",
+      "healthcare",
+      "document_reference"
+    ]
+  },
+  "hc.encounter_location": {
+    "description": "Represents the location details of a healthcare encounter, linking it to specific rooms and beds over time.",
+    "tags": [
+      "healthcare",
+      "encounter_location",
+      "room_assignment",
+      "bed_assignment",
+      "patient_flow",
+      "location_tracking"
+    ]
+  },
+  "hc.encounter_procedure": {
+    "description": "Associates a procedure with a patient encounter, recording when it was performed and who performed it.",
+    "tags": [
+      "healthcare",
+      "encounter",
+      "procedure",
+      "provider",
+      "medical_record"
+    ]
+  },
+  "hc.formulary": {
+    "description": "Represents the association between a facility and medications in its formulary, indicating whether each medication is currently active.",
+    "tags": [
+      "healthcare",
+      "pharmacy",
+      "medication_formulary",
+      "facility_medication",
+      "active_status"
+    ]
+  },
+  "hc.imaging_result": {
+    "description": "Represents the outcome of an imaging procedure, including findings and impression.",
+    "tags": [
+      "health_care",
+      "imaging",
+      "diagnostics",
+      "medical_records",
+      "clinical"
+    ]
+  },
+  "hc.imaging_study": {
+    "description": "Table listing imaging study types with a unique ID, code, name, and modality.",
+    "tags": [
+      "imaging_studies",
+      "study_catalog",
+      "medical_imaging",
+      "modality",
+      "code_reference"
+    ]
+  },
+  "hc.immunization": {
+    "description": "Stores patient immunization records, including vaccine administered, date, and facility details.",
+    "tags": [
+      "immunization",
+      "vaccination_records",
+      "patient_health",
+      "vaccine_tracking",
+      "facility_records",
+      "medical_records"
+    ]
+  },
+  "hc.insurance_plan": {
+    "description": "Table storing basic attributes of health insurance plans, including an identifier, payer name, plan name, and type.",
+    "tags": [
+      "health_care",
+      "insurance",
+      "plan",
+      "payer",
+      "plan_type"
+    ]
+  },
+  "hc.inventory_item": {
+    "description": "Represents an individual inventory item, identified by a unique ID, with a SKU, name, type, and unit of measure.",
+    "tags": [
+      "inventory",
+      "item",
+      "sku",
+      "unit_of_measure",
+      "product",
+      "warehousing"
+    ]
+  },
+  "hc.inventory_stock": {
+    "description": "The inventory_stock table records the quantity of each inventory item at a specific location.",
+    "tags": [
+      "inventory",
+      "stock",
+      "location",
+      "item",
+      "quantity",
+      "warehouse"
+    ]
+  },
+  "hc.invoice": {
+    "description": "Represents a billing invoice for a patient, optionally linked to a specific encounter, including issuance time, status, and total amount.",
+    "tags": [
+      "healthcare",
+      "billing",
+      "invoice",
+      "patient",
+      "encounter"
+    ]
+  },
+  "hc.isolation_precaution": {
+    "description": "Tracks isolation precautions applied to a patient during a specific encounter.",
+    "tags": [
+      "isolation_precaution",
+      "encounter",
+      "infection_control",
+      "healthcare",
+      "patient_safety",
+      "medical_record"
+    ]
+  },
+  "hc.lab_order_item": {
+    "description": "Represents individual tests or panels included in a laboratory order.",
+    "tags": [
+      "lab_order_item",
+      "lab_test",
+      "lab_panel",
+      "priority",
+      "healthcare",
+      "lab",
+      "order_item"
+    ]
+  },
+  "hc.lab_panel": {
+    "description": "Represents a laboratory test panel identified by a unique ID, code, and name.",
+    "tags": [
+      "lab_panel",
+      "medical_lab",
+      "test_panel",
+      "clinical_testing"
+    ]
+  },
+  "hc.lab_panel_item": {
+    "description": "Links individual laboratory tests to a laboratory panel, representing a many-to-many relationship.",
+    "tags": [
+      "lab_test",
+      "lab_panel",
+      "many_to_many",
+      "reference_table",
+      "clinical_lab"
+    ]
+  },
+  "hc.lab_result_flag": {
+    "description": "Stores status indicators or flags associated with individual laboratory results.",
+    "tags": [
+      "lab_results",
+      "flags",
+      "medical_records",
+      "clinical_data"
+    ]
+  },
+  "hc.lab_test": {
+    "description": "Table containing reference ranges and units for laboratory tests.",
+    "tags": [
+      "lab_test",
+      "reference_range",
+      "unit_measure",
+      "healthcare",
+      "lab_codes"
+    ]
+  },
+  "hc.med_order_dose": {
+    "description": "Table stores individual dose details for a medication order, including amount, unit, frequency, and start/end timestamps.",
+    "tags": [
+      "medication_orders",
+      "dosage_details",
+      "frequency",
+      "start_end_times",
+      "med_order_link",
+      "clinical_dosing"
+    ]
+  },
+  "hc.medication": {
+    "description": "Table containing basic medication records with identifiers for name, form, and strength.",
+    "tags": [
+      "medication",
+      "pharmacy",
+      "healthcare",
+      "clinical_data",
+      "drug"
+    ]
+  },
+  "hc.medication_form": {
+    "description": "Represents the different forms a medication can be administered in, such as tablet, capsule, injection, or liquid.",
+    "tags": [
+      "medication_forms",
+      "pharmaceutical",
+      "dosage_forms",
+      "healthcare",
+      "medical"
+    ]
+  },
+  "hc.medication_route": {
+    "description": "Table stores unique identifiers for medication administration routes and their names.",
+    "tags": [
+      "medication_route",
+      "healthcare",
+      "pharmaceutical",
+      "administration",
+      "route"
+    ]
+  },
+  "hc.medication_strength": {
+    "description": "Contains textual representations of medication strengths.",
+    "tags": [
+      "medication_strength",
+      "pharmacology",
+      "dosage",
+      "pharmacy"
+    ]
+  },
+  "hc.message": {
+    "description": "Stores individual messages that belong to a message thread, including the sender (user, provider, or staff), the timestamp, and message body.",
+    "tags": [
+      "message",
+      "thread",
+      "communication",
+      "healthcare",
+      "user",
+      "provider",
+      "staff"
+    ]
+  },
+  "hc.message_participant": {
+    "description": "Represents a participant in a message thread, linking to app users, providers, or staff.",
+    "tags": [
+      "messaging",
+      "participants",
+      "message_thread",
+      "users",
+      "providers",
+      "staff"
+    ]
+  },
+  "hc.message_read_receipt": {
+    "description": "Records when a user has read a specific message, linking messages to app users and timestamps.",
+    "tags": [
+      "messaging",
+      "read_receipt",
+      "audit",
+      "app_user",
+      "timestamp"
+    ]
+  },
+  "hc.message_thread": {
+    "description": "Represents a thread of messages associated with a patient or a specific encounter, including subject and creation timestamp.",
+    "tags": [
+      "medical",
+      "communication",
+      "patient",
+      "encounter",
+      "message_thread",
+      "healthcare"
+    ]
+  },
+  "hc.note_section": {
+    "description": "Represents a section or category within a note, identified by an ID, code, and descriptive name.",
+    "tags": [
+      "note_section",
+      "healthcare_documentation",
+      "categorization"
+    ]
+  },
+  "hc.note_section_entry": {
+    "description": "Stores individual entries that belong to a specific section of a clinical note.",
+    "tags": [
+      "clinical_notes",
+      "note_sections",
+      "entries",
+      "text_content",
+      "healthcare"
+    ]
+  },
+  "hc.note_type": {
+    "description": "Represents categories or types of notes, each identified by a unique ID, code, and descriptive name.",
+    "tags": [
+      "note_type",
+      "categorization",
+      "reference_table",
+      "code_reference",
+      "metadata"
+    ]
+  },
+  "hc.patient_address": {
+    "description": "Represents address records associated with a patient, including an indicator for the primary address.",
+    "tags": [
+      "patient",
+      "address",
+      "medical_records",
+      "contact_info"
+    ]
+  },
+  "hc.patient_allergy": {
+    "description": "Represents the association between a patient and an allergy, including reaction details, severity, and the timestamp the record was created.",
+    "tags": [
+      "patient_allergies",
+      "medical_history",
+      "allergy_record",
+      "patient_info",
+      "clinical_records",
+      "healthcare_data"
+    ]
+  },
+  "hc.patient_contact": {
+    "description": "Stores contact information for patients, including names, relationships, phone numbers, emails, and emergency status.",
+    "tags": [
+      "patient_contact_info",
+      "emergency_contact",
+      "contact_details",
+      "healthcare_data"
+    ]
+  },
+  "hc.patient_identifier": {
+    "description": "Table for storing various identifiers associated with a patient, such as national IDs, insurance numbers, or other unique IDs.",
+    "tags": [
+      "patient_identifier",
+      "identifiers",
+      "patient_records",
+      "healthcare"
+    ]
+  },
+  "hc.permission": {
+    "description": "A table storing permission definitions, each identified by a unique ID, a name, and an optional description.",
+    "tags": [
+      "access_control",
+      "permissions",
+      "authorization",
+      "security"
+    ]
+  },
+  "hc.problem_list": {
+    "description": "Represents a list of medical problems or conditions associated with patients, optionally linked to a formal diagnosis.",
+    "tags": [
+      "medical_records",
+      "patient_problems",
+      "health_conditions",
+      "diagnosis_mapping",
+      "status_tracking",
+      "onset_date"
+    ]
+  },
+  "hc.procedure": {
+    "description": "A table of clinical procedures, storing a unique ID, the code system, the code, and a textual description.",
+    "tags": [
+      "health_care",
+      "procedure_codes",
+      "clinical",
+      "medical",
+      "coding"
+    ]
+  },
+  "hc.procedure_note_link": {
+    "description": "Links clinical notes to procedures.",
+    "tags": [
+      "link_table",
+      "clinical_note",
+      "procedure",
+      "medical_records"
+    ]
+  },
+  "hc.provider_license": {
+    "description": "Stores licensing details for healthcare providers, referencing the provider table.",
+    "tags": [
+      "provider_licensing",
+      "healthcare",
+      "licensing",
+      "provider_reference",
+      "license_info"
+    ]
+  },
+  "hc.referral_document": {
+    "description": "Associates documents with referral records in a many-to-many relationship.",
+    "tags": [
+      "referral",
+      "document",
+      "junction_table",
+      "healthcare"
+    ]
+  },
+  "hc.referral_reason": {
+    "description": "Stores reasons for a referral, optionally linked to a diagnosis.",
+    "tags": [
+      "healthcare",
+      "referral",
+      "diagnosis",
+      "reason",
+      "free_text"
+    ]
+  },
+  "hc.referral_status_history": {
+    "description": "A log of status changes for referral records, capturing when and by whom each status change occurred.",
+    "tags": [
+      "referral",
+      "status",
+      "history",
+      "audit",
+      "change_log",
+      "user",
+      "timestamp"
+    ]
+  },
+  "hc.revenue_code": {
+    "description": "Represents individual revenue codes used to classify income or billing entries.",
+    "tags": [
+      "revenue_codes",
+      "billing",
+      "finance",
+      "coding",
+      "income"
+    ]
+  },
+  "hc.role": {
+    "description": "Represents a role or permission level within the system.",
+    "tags": [
+      "user_role",
+      "permission",
+      "access_control",
+      "system_role",
+      "roles"
+    ]
+  },
+  "hc.role_permission": {
+    "description": "Associates roles with permissions, defining which permissions belong to each role.",
+    "tags": [
+      "role_permission",
+      "many_to_many",
+      "roles",
+      "permissions",
+      "security",
+      "access_control"
+    ]
+  },
+  "hc.staff": {
+    "description": "Represents staff members assigned to facilities and departments within a health‑care system, including role and employment status.",
+    "tags": [
+      "health_care",
+      "staffing",
+      "facility_assignment",
+      "department_assignment",
+      "person_reference",
+      "employment_record"
+    ]
+  },
+  "hc.staff_schedule": {
+    "description": "Represents scheduled work shifts for staff members, including start and end times and a shift classification.",
+    "tags": [
+      "staff_schedule",
+      "shift",
+      "workforce_management",
+      "scheduling",
+      "hr",
+      "time_tracking"
+    ]
+  },
+  "hc.tag": {
+    "description": "A simple lookup table for tag identifiers and their names, used to classify or label other data elements within the system.",
+    "tags": [
+      "tagging",
+      "metadata",
+      "classification"
+    ]
+  },
+  "hc.transfer": {
+    "description": "Records the transfer of a patient admission between departments within the healthcare system.",
+    "tags": [
+      "patient_transfer",
+      "department_movement",
+      "admission_tracking",
+      "medical_records"
+    ]
+  },
+  "hc.user_role": {
+    "description": "Links users to their roles within the system.",
+    "tags": [
+      "user_role",
+      "many_to_many",
+      "user_management",
+      "auth",
+      "role_assignment"
+    ]
+  },
+  "hc.vaccine": {
+    "description": "Table containing basic information about vaccines, including unique identifier, name, and manufacturer.",
+    "tags": [
+      "healthcare",
+      "vaccines",
+      "medical_data",
+      "vaccine_info"
+    ]
+  },
+  "hc.vital_type": {
+    "description": "Represents the various types of vital signs that can be recorded.",
+    "tags": [
+      "medical_records",
+      "vital_signs",
+      "data_dictionary",
+      "healthcare"
+    ]
+  }
+}
