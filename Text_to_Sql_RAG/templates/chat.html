@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Text to SQL RAG</title>
+    <style>
+      :root {
+        --bg: #0f1a1f;
+        --card: #1a2a32;
+        --accent: #f6c453;
+        --text: #f3f6f7;
+        --muted: #a9b3b8;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Mono", "Courier New", monospace;
+        background: radial-gradient(1200px 600px at 20% -10%, #1f3b45 0%, #0f1a1f 60%);
+        color: var(--text);
+      }
+      main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+      h1 {
+        font-size: 32px;
+        margin: 0 0 12px;
+        letter-spacing: 0.5px;
+      }
+      p.lede {
+        margin: 0 0 28px;
+        color: var(--muted);
+      }
+      form {
+        background: var(--card);
+        border: 1px solid #2a3b42;
+        padding: 18px;
+        border-radius: 12px;
+        display: grid;
+        gap: 12px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 96px;
+        resize: vertical;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #354950;
+        background: #0f1519;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 14px;
+      }
+      button {
+        justify-self: start;
+        background: var(--accent);
+        color: #1f1b12;
+        border: none;
+        padding: 10px 16px;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .grid {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+      }
+      .panel {
+        background: #111c21;
+        border: 1px solid #23343a;
+        border-radius: 12px;
+        padding: 14px;
+        min-height: 160px;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+      .secondary {
+        background: transparent;
+        color: var(--accent);
+        border: 1px solid var(--accent);
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 700;
+      }
+      .panel h3 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .error {
+        color: #ffb5b5;
+        background: #3a1c1c;
+        border: 1px solid #603030;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Text to SQL RAG</h1>
+      <p class="lede">Ask a natural language question. The app retrieves schema context, plans, generates SQL, and executes a read-only query.</p>
+      <div class="actions">
+        <a class="secondary" href="/">Change DB URL / Schema</a>
+      </div>
+      <form id="query-form">
+        <label for="question">Question</label>
+        <textarea id="question" name="question" placeholder="Example: Show top 10 providers by total claims in 2023"></textarea>
+        <button id="submit-btn" type="submit">Run query</button>
+      </form>
+      <div id="error" class="error" style="display:none;"></div>
+      <section class="grid">
+        <div class="panel">
+          <h3>Retrieved Tables</h3>
+          <pre id="retrieved">-</pre>
+        </div>
+        <div class="panel">
+          <h3>Plan</h3>
+          <pre id="plan">-</pre>
+        </div>
+        <div class="panel">
+          <h3>SQL</h3>
+          <pre id="sql">-</pre>
+        </div>
+        <div class="panel">
+          <h3>Result (first 20 rows)</h3>
+          <pre id="result">-</pre>
+        </div>
+      </section>
+    </main>
+    <script>
+      const form = document.getElementById("query-form");
+      const button = document.getElementById("submit-btn");
+      const errBox = document.getElementById("error");
+      const retrievedEl = document.getElementById("retrieved");
+      const planEl = document.getElementById("plan");
+      const sqlEl = document.getElementById("sql");
+      const resultEl = document.getElementById("result");
+
+      function setError(msg) {
+        if (msg) {
+          errBox.textContent = msg;
+          errBox.style.display = "block";
+        } else {
+          errBox.textContent = "";
+          errBox.style.display = "none";
+        }
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const question = document.getElementById("question").value.trim();
+        if (!question) {
+          setError("Please enter a question.");
+          return;
+        }
+        setError("");
+        button.disabled = true;
+        retrievedEl.textContent = "Loading...";
+        planEl.textContent = "Loading...";
+        sqlEl.textContent = "Loading...";
+        resultEl.textContent = "Loading...";
+        try {
+          const resp = await fetch("/api/query", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) {
+            throw new Error(data.detail || data.error || "Request failed");
+          }
+          const retrieved = (data.retrieved || [])
+            .slice(0, 10)
+            .map((h) => {
+              const p = h.payload || {};
+              const desc = (p.description || "").slice(0, 90);
+              return `- ${p.doc_id || "unknown"} (score=${(h.score || 0).toFixed(4)}) :: ${desc}`;
+            })
+            .join("\n");
+          retrievedEl.textContent = retrieved || "-";
+          planEl.textContent = JSON.stringify(data.plan || {}, null, 2);
+          sqlEl.textContent = data.sql || "-";
+          const cols = (data.result && data.result.columns) || [];
+          const rows = (data.result && data.result.rows) || [];
+          const preview = rows.slice(0, 20).map((r) => JSON.stringify(r));
+          resultEl.textContent = JSON.stringify(cols) + "\n" + preview.join("\n");
+        } catch (err) {
+          setError(err.message || "Unexpected error");
+          retrievedEl.textContent = "-";
+          planEl.textContent = "-";
+          sqlEl.textContent = "-";
+          resultEl.textContent = "-";
+        } finally {
+          button.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

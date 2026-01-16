@@ -1,11 +1,21 @@
+from __future__ import annotations
+
 from typing import Dict, Any, List, Optional
+
 from db_connection import get_connection
 
 SYSTEM_SCHEMAS = {"pg_catalog", "information_schema"}
 
 
-def extract_schema_for_schemas(schemas: Optional[List[str]] = None) -> Dict[str, Any]:
-    with get_connection() as conn:
+def extract_schema_for_schemas(
+    schemas: Optional[List[str]] = None,
+    db_url: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Extract tables, columns, and foreign keys for the requested schemas.
+    If schemas=None, discovers all non-system schemas.
+    """
+    with get_connection(db_url=db_url) as conn:
         with conn.cursor() as cur:
             if schemas is None:
                 cur.execute(
@@ -23,6 +33,7 @@ def extract_schema_for_schemas(schemas: Optional[List[str]] = None) -> Dict[str,
             out: Dict[str, Any] = {"schemas": {}}
 
             for sch in schemas:
+                # Tables
                 cur.execute(
                     """
                     SELECT table_name
@@ -34,8 +45,11 @@ def extract_schema_for_schemas(schemas: Optional[List[str]] = None) -> Dict[str,
                     (sch,),
                 )
                 table_names = [r[0] for r in cur.fetchall()]
-                tables: Dict[str, Any] = {t: {"columns": [], "foreign_keys": []} for t in table_names}
+                tables: Dict[str, Any] = {
+                    t: {"columns": [], "foreign_keys": []} for t in table_names
+                }
 
+                # Columns
                 cur.execute(
                     """
                     SELECT table_name, column_name, data_type, is_nullable
@@ -55,6 +69,7 @@ def extract_schema_for_schemas(schemas: Optional[List[str]] = None) -> Dict[str,
                             }
                         )
 
+                # Foreign keys
                 cur.execute(
                     """
                     SELECT
@@ -91,5 +106,8 @@ def extract_schema_for_schemas(schemas: Optional[List[str]] = None) -> Dict[str,
     return out
 
 
-def get_schema_payload() -> Dict[str, Any]:
-    return extract_schema_for_schemas(["hc", "healthcare"])
+def get_schema_payload(
+    schemas: Optional[List[str]] = None,
+    db_url: Optional[str] = None,
+) -> Dict[str, Any]:
+    return extract_schema_for_schemas(schemas=schemas, db_url=db_url)

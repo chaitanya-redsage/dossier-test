@@ -1,12 +1,15 @@
+from __future__ import annotations
+
 import os
 import json
 import uuid
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional, Iterable
 
 import numpy as np
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams, PointStruct, PayloadSchemaType
 from sentence_transformers import SentenceTransformer
+
+from qdrant_client import QdrantClient
+from qdrant_client.http.models import Distance, VectorParams, PointStruct
 
 from db_connection import load_env
 from schema_tools import get_schema_payload
@@ -21,6 +24,13 @@ def stable_uuid(text: str) -> str:
 
 
 def load_table_metadata(path: str = "table_metadata.json") -> Dict[str, Any]:
+    """
+    Metadata format:
+      {
+        "schema.table": {"description": "...", "tags": ["..."]},
+        ...
+      }
+    """
     if not os.path.exists(path):
         return {}
     with open(path, "r", encoding="utf-8") as f:
@@ -64,8 +74,7 @@ def schema_to_docs(schema_payload: Dict[str, Any], metadata: Dict[str, Any]) -> 
                 text += "Foreign Keys:\n- " + "\n- ".join(fk_lines) + "\n"
 
             payload = {
-                # keep your original human-readable id in payload
-                "doc_id": key,
+                "doc_id": key,  # human-readable id
                 "schema": schema_name,
                 "table": table_name,
                 "kind": "table",
@@ -80,44 +89,36 @@ def schema_to_docs(schema_payload: Dict[str, Any], metadata: Dict[str, Any]) -> 
     return docs
 
 
-def embed_texts(texts: List[str], model_name: str) -> np.ndarray:
-    model = SentenceTransformer(model_name, trust_remote_code=True)
+def embed_texts(texts: List[str], model: SentenceTransformer, batch_size: int = 32) -> np.ndarray:
     vecs = model.encode(
         texts,
         normalize_embeddings=True,
-        batch_size=32,
+        batch_size=batch_size,
         show_progress_bar=True,
     )
     return np.asarray(vecs, dtype=np.float32)
 
 
-def ensure_payload_indexes(client: QdrantClient, collection: str) -> None:
-    def try_create(field: str, typ: PayloadSchemaType):
-        try:
-            client.create_payload_index(
-                collection_name=collection,
-                field_name=field,
-                field_schema=typ,
-            )
-            print(f"✅ payload index: {field}")
-        except Exception:
-            print(f"ℹ️ payload index exists (or cannot create): {field}")
-
-    # Add doc_id so you can filter/debug by original string id if you want
-    try_create("doc_id", PayloadSchemaType.KEYWORD)
-
-    try_create("schema", PayloadSchemaType.KEYWORD)
-    try_create("table", PayloadSchemaType.KEYWORD)
-    try_create("kind", PayloadSchemaType.KEYWORD)
-    try_create("tags", PayloadSchemaType.KEYWORD)
+def chunked(seq: List[Any], size: int) -> Iterable[List[Any]]:
+    for i in range(0, len(seq), size):
+        yield seq[i : i + size]
 
 
-def index_schema_to_qdrant() -> None:
+def index_all_schemas_to_one_collection(
+    db_url: Optional[str] = None,
+    schemas: Optional[List[str]] = None,
+) -> None:
+    """
+    SAFE MODE:
+      - Uses ONE collection for all schemas
+      - Avoids get_collection() and create_payload_index() calls
+        because some qdrant-client/pydantic combos crash parsing payload_schema.
+    """
     load_env()
 
     qdrant_url = os.getenv("QDRANT_URL")
     qdrant_api_key = os.getenv("QDRANT_API_KEY")
-    collection = os.getenv("QDRANT_COLLECTION", "db_schema")
+    collection = os.getenv("QDRANT_COLLECTION", "db_schema_all")
     vector_name = os.getenv("QDRANT_VECTOR_NAME", "embedding")
     model_name = os.getenv("EMBED_MODEL", "nomic-ai/nomic-embed-text-v1.5")
 
@@ -127,8 +128,9 @@ def index_schema_to_qdrant() -> None:
         raise ValueError("Missing QDRANT_API_KEY in .env")
 
     client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+    model = SentenceTransformer(model_name, trust_remote_code=True)
 
-    schema_payload = get_schema_payload()
+    schema_payload = get_schema_payload(schemas=schemas, db_url=db_url)
     metadata = load_table_metadata("table_metadata.json")
     docs = schema_to_docs(schema_payload, metadata)
 
@@ -136,10 +138,11 @@ def index_schema_to_qdrant() -> None:
         raise RuntimeError("No schema docs produced")
 
     texts = [d["text"] for d in docs]
-    vectors = embed_texts(texts, model_name=model_name)
-    dim = vectors.shape[1]
+    vectors = embed_texts(texts, model=model, batch_size=32)
+    dim = int(vectors.shape[1])
 
-    existing = [c.name for c in client.get_collections().collections]
+    # Only call get_collections() (this usually doesn't include payload_schema)
+    existing = {c.name for c in client.get_collections().collections}
     if collection not in existing:
         client.create_collection(
             collection_name=collection,
@@ -148,13 +151,11 @@ def index_schema_to_qdrant() -> None:
         print(f"✅ created collection: {collection} (vector='{vector_name}', dim={dim})")
     else:
         print(f"ℹ️ using existing collection: {collection}")
+        print("ℹ️ SAFE MODE: skipping dim validation and payload index creation")
 
-    ensure_payload_indexes(client, collection)
-
-    # IMPORTANT: Qdrant Cloud requires id to be UUID or uint
     points: List[PointStruct] = []
     for d, vec in zip(docs, vectors):
-        qdrant_id = stable_uuid(d["id"])  # deterministic uuid
+        qdrant_id = stable_uuid(d["payload"]["schema"] + "::" + d["id"])
         points.append(
             PointStruct(
                 id=qdrant_id,
@@ -163,9 +164,24 @@ def index_schema_to_qdrant() -> None:
             )
         )
 
-    client.upsert(collection_name=collection, points=points)
-    print(f"✅ upserted {len(points)} schema docs into Qdrant Cloud")
+    total = 0
+    for batch in chunked(points, size=512):
+        client.upsert(collection_name=collection, points=batch)
+        total += len(batch)
+        print(f"✅ upserted batch: {len(batch)} (total={total}/{len(points)})")
+
+    print(f"✅ done: upserted {len(points)} schema docs into Qdrant collection '{collection}'")
+
+
+def index_schema_to_qdrant(
+    db_url: Optional[str] = None,
+    schemas: Optional[List[str]] = None,
+) -> None:
+    """
+    Backwards-compatible alias for older imports.
+    """
+    return index_all_schemas_to_one_collection(db_url=db_url, schemas=schemas)
 
 
 if __name__ == "__main__":
-    index_schema_to_qdrant()
+    index_all_schemas_to_one_collection(schemas=None)

@@ -1,6 +1,6 @@
 import os
 import json
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 from openai import OpenAI
 
@@ -48,12 +48,14 @@ def generate_table_metadata(
     schema_payload: Optional[Dict[str, Any]] = None,
     out_path: str = "table_metadata.json",
     overwrite: bool = False,
+    db_url: Optional[str] = None,
+    schemas: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     load_env()
     model = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
     if schema_payload is None:
-        schema_payload = get_schema_payload()
+        schema_payload = get_schema_payload(db_url=db_url, schemas=schemas)
 
     existing = load_metadata(out_path)
     client = get_groq_client()

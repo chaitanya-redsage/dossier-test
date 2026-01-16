@@ -1098,5 +1098,541 @@
       "data_dictionary",
       "healthcare"
     ]
+  },
+  "new_data.app_user": {
+    "description": "Table storing application user credentials and status, linked optionally to an employee record.",
+    "tags": [
+      "user_account",
+      "authentication",
+      "employee_link",
+      "security",
+      "system_users"
+    ]
+  },
+  "new_data.audit": {
+    "description": "Tracks audit records for sites, including audit type, scheduled and performed dates, lead auditor, and current status.",
+    "tags": [
+      "audit",
+      "site",
+      "supplier",
+      "employee",
+      "compliance",
+      "scheduling",
+      "status"
+    ]
+  },
+  "new_data.audit_finding": {
+    "description": "Table storing individual findings from audits, including severity, description, and status, with optional link to a corrective action plan.",
+    "tags": [
+      "audit_findings",
+      "audit_records",
+      "compliance",
+      "corrective_action",
+      "severity_levels",
+      "status_tracking"
+    ]
+  },
+  "new_data.audit_log": {
+    "description": "A table that stores audit events, recording the time, user, action type, target entity and detailed JSON data.",
+    "tags": [
+      "audit_log",
+      "user_activity",
+      "event_tracking",
+      "security_audit",
+      "entity_changes"
+    ]
+  },
+  "new_data.batch": {
+    "description": "Represents a manufacturing batch for a drug product, linking to the work order, site, and product. It stores batch identifiers, production dates, and status.",
+    "tags": [
+      "manufacturing",
+      "batch",
+      "pharma",
+      "product",
+      "site",
+      "work_order",
+      "expiry"
+    ]
+  },
+  "new_data.batch_material_consumption": {
+    "description": "Records of material usage for production batches.",
+    "tags": [
+      "production",
+      "batch",
+      "material_consumption",
+      "inventory",
+      "manufacturing",
+      "process_tracking"
+    ]
+  },
+  "new_data.batch_step": {
+    "description": "Represents an individual step within a production batch, tracking sequence, timing, equipment used, and operator involved.",
+    "tags": [
+      "production_batch",
+      "process_step",
+      "equipment_use",
+      "operator_tracking",
+      "manufacturing_process",
+      "audit_trail"
+    ]
+  },
+  "new_data.capa": {
+    "description": "Represents corrective action plans linked to deviations, including details such as root cause, action plan, due date, status, and assigned owner.",
+    "tags": [
+      "corrective_action",
+      "deviation_management",
+      "root_cause_analysis",
+      "action_plan",
+      "status_tracking",
+      "employee_ownership"
+    ]
+  },
+  "new_data.certificate": {
+    "description": "A table storing certificate records, including type, number, issue and expiry dates, status, and optional links to a site, supplier, or regulatory agency.",
+    "tags": [
+      "certificates",
+      "compliance",
+      "supply_chain",
+      "site_management",
+      "supplier_management",
+      "regulatory_agency"
+    ]
+  },
+  "new_data.change_control": {
+    "description": "A record of change requests applied to a site, including who requested it, when, type, description, impact assessment, and current status.",
+    "tags": [
+      "change_management",
+      "site",
+      "employee",
+      "change_request",
+      "status_tracking",
+      "audit"
+    ]
+  },
+  "new_data.company": {
+    "description": "Table storing basic information about companies, including ID, name, country, and creation timestamp.",
+    "tags": [
+      "company_info",
+      "business_entity",
+      "country_info",
+      "timestamps",
+      "metadata"
+    ]
+  },
+  "new_data.department": {
+    "description": "Represents a department or organizational unit within a site.",
+    "tags": [
+      "department",
+      "site",
+      "organization",
+      "business_unit",
+      "location",
+      "site_id",
+      "organizational_structure"
+    ]
+  },
+  "new_data.deviation": {
+    "description": "Represents a deviation or incident recorded at a specific site, optionally linked to a batch, with details about severity and status.",
+    "tags": [
+      "incident_tracking",
+      "quality_control",
+      "manufacturing",
+      "audit",
+      "compliance"
+    ]
+  },
+  "new_data.document": {
+    "description": "Table storing metadata for organizational documents, including identification, type, owner department, status and version information.",
+    "tags": [
+      "document_metadata",
+      "version_control",
+      "departmental_records",
+      "document_management",
+      "status_tracking"
+    ]
+  },
+  "new_data.document_version": {
+    "description": "Table stores metadata for each version of a document, including its number, effective date, storage location, and checksum.",
+    "tags": [
+      "document_management",
+      "version_control",
+      "storage_uri",
+      "checksum",
+      "audit"
+    ]
+  },
+  "new_data.drug_product": {
+    "description": "Represents a pharmaceutical drug product with its identification, formulation details, and therapeutic classification.",
+    "tags": [
+      "drug_product",
+      "pharmaceutical",
+      "dosage_form",
+      "therapeutic_area",
+      "product_catalog",
+      "status"
+    ]
+  },
+  "new_data.employee": {
+    "description": "Stores employee records linking to person, site, and department with title, hire date, and active status.",
+    "tags": [
+      "employee_records",
+      "personnel_management",
+      "hr_data",
+      "organizational_structure"
+    ]
+  },
+  "new_data.equipment": {
+    "description": "Stores details of equipment located at various sites, including code, name, type, and status.",
+    "tags": [
+      "equipment_management",
+      "site_equipment",
+      "inventory",
+      "maintenance",
+      "asset_tracking"
+    ]
+  },
+  "new_data.formulation": {
+    "description": "Table stores versioned formulation records for drug products, including validity periods and status.",
+    "tags": [
+      "pharmaceutical",
+      "drug_product",
+      "formulation",
+      "versioning",
+      "effective_dates",
+      "status"
+    ]
+  },
+  "new_data.formulation_component": {
+    "description": "Associates a material component with a formulation, specifying its role and quantity per unit.",
+    "tags": [
+      "formulation",
+      "component",
+      "material",
+      "role",
+      "quantity",
+      "unit"
+    ]
+  },
+  "new_data.inventory_balance": {
+    "description": "Stores current on‑hand quantity of a material lot at a specific inventory location.",
+    "tags": [
+      "inventory_balance",
+      "qty_on_hand",
+      "location_tracking",
+      "material_lot",
+      "stock_level"
+    ]
+  },
+  "new_data.inventory_location": {
+    "description": "Represents inventory storage locations within a site.",
+    "tags": [
+      "inventory",
+      "location",
+      "site",
+      "warehouse"
+    ]
+  },
+  "new_data.inventory_txn": {
+    "description": "Tracks inventory adjustments for material lots at specific locations over time.",
+    "tags": [
+      "inventory_transactions",
+      "material_lot",
+      "location",
+      "stock_adjustment",
+      "warehouse_management",
+      "audit_trail"
+    ]
+  },
+  "new_data.market": {
+    "description": "This table stores market identifiers along with their associated country. Each row represents a distinct market.",
+    "tags": [
+      "market",
+      "country",
+      "identifier",
+      "geographic_data",
+      "business_analytics"
+    ]
+  },
+  "new_data.material": {
+    "description": "Represents individual material items, with codes, names, types, units, optional specification document references, and an active status flag.",
+    "tags": [
+      "material",
+      "inventory",
+      "specification_doc_reference",
+      "active_status",
+      "unit_measure"
+    ]
+  },
+  "new_data.material_lot": {
+    "description": "Represents a batch of material, including its lot number, manufacturing and expiry dates, supplier, receipt, and current status.",
+    "tags": [
+      "material_management",
+      "inventory",
+      "batch",
+      "supply_chain",
+      "lot_tracking"
+    ]
+  },
+  "new_data.material_receipt": {
+    "description": "Records the receipt of materials at a site, optionally linked to a purchase order, with the employee who received the materials and the status of the receipt.",
+    "tags": [
+      "material_receipt",
+      "inventory",
+      "logistics",
+      "procurement",
+      "supply_chain",
+      "warehouse"
+    ]
+  },
+  "new_data.permission": {
+    "description": "Table storing permission identifiers and names for access control.",
+    "tags": [
+      "permission",
+      "access_control",
+      "authorization",
+      "security",
+      "lookup_table"
+    ]
+  },
+  "new_data.person": {
+    "description": "A table storing basic personal information such as name, contact details, and record creation timestamp.",
+    "tags": [
+      "person",
+      "contact_info",
+      "basic_info",
+      "user_profile",
+      "personal_details"
+    ]
+  },
+  "new_data.purchase_order": {
+    "description": "Represents a purchase order issued to a supplier for a specific site, including order date and status.",
+    "tags": [
+      "purchase_order",
+      "procurement",
+      "supplier_relationship",
+      "site_management",
+      "order_tracking",
+      "inventory",
+      "supply_chain"
+    ]
+  },
+  "new_data.purchase_order_line": {
+    "description": "Table stores individual line items for purchase orders, linking materials to orders with quantities, unit pricing, and expected delivery dates.",
+    "tags": [
+      "purchase_order",
+      "order_line",
+      "procurement",
+      "material",
+      "line_item"
+    ]
+  },
+  "new_data.qc_method": {
+    "description": "Table stores quality control methods with unique identifiers, codes, names, and versioning information.",
+    "tags": [
+      "quality_control",
+      "methods",
+      "versioning",
+      "status",
+      "data_integrity"
+    ]
+  },
+  "new_data.qc_result": {
+    "description": "Stores results of quality control tests performed on samples, including value, pass/fail status, and completion timestamp.",
+    "tags": [
+      "quality_control",
+      "test_result",
+      "sample",
+      "laboratory",
+      "analyst"
+    ]
+  },
+  "new_data.qc_sample": {
+    "description": "Represents quality control samples collected at sites, linked to specific batches, material lots, and the employee who collected them.",
+    "tags": [
+      "quality_control",
+      "sample",
+      "site",
+      "batch",
+      "material_lot",
+      "employee",
+      "collection"
+    ]
+  },
+  "new_data.qc_specification": {
+    "description": "Table stores quality control specifications linking products or materials to specific tests and their limits.",
+    "tags": [
+      "quality_control",
+      "specification",
+      "product",
+      "material",
+      "test",
+      "compliance"
+    ]
+  },
+  "new_data.qc_test": {
+    "description": "Table storing quality control test definitions, including test identifiers, codes, names, target types, and optional reference to a test method.",
+    "tags": [
+      "quality_control",
+      "qc",
+      "tests",
+      "methods",
+      "target_type"
+    ]
+  },
+  "new_data.reg_agency": {
+    "description": "Table containing registration agency information, including a unique identifier, name, and optional country.",
+    "tags": [
+      "registry_agency",
+      "agency",
+      "country_info",
+      "administrative_entity"
+    ]
+  },
+  "new_data.role": {
+    "description": "Table storing role identifiers and names for user or entity roles.",
+    "tags": [
+      "roles",
+      "access_control",
+      "permissions",
+      "user_management",
+      "authorization"
+    ]
+  },
+  "new_data.role_permission": {
+    "description": "Associates roles with permissions, defining which permissions are granted to each role.",
+    "tags": [
+      "role_permission",
+      "many_to_many",
+      "security",
+      "access_control",
+      "authorization"
+    ]
+  },
+  "new_data.site": {
+    "description": "Table holds information about company sites, including their identifiers, names, types, and location details such as address and timezone.",
+    "tags": [
+      "site_info",
+      "company_location",
+      "address",
+      "timezone",
+      "site_type"
+    ]
+  },
+  "new_data.stability_sample": {
+    "description": "Represents a mapping between a QC sample and a timepoint in a stability study.",
+    "tags": [
+      "stability",
+      "sample_mapping",
+      "qc_sample",
+      "timepoint",
+      "junction_table"
+    ]
+  },
+  "new_data.stability_study": {
+    "description": "Represents stability studies for a drug product, tracking the protocol, condition, dates, and status for each product and optional batch.",
+    "tags": [
+      "stability_study",
+      "drug_product",
+      "batch_tracking",
+      "study_protocol",
+      "pharmaceutical_testing",
+      "status_tracking"
+    ]
+  },
+  "new_data.stability_timepoint": {
+    "description": "Represents scheduled timepoints for stability assessment within a study.",
+    "tags": [
+      "clinical_trials",
+      "study_schedule",
+      "timepoint",
+      "stability_assessment",
+      "study_management",
+      "schedule"
+    ]
+  },
+  "new_data.submission": {
+    "description": "Table stores submissions of drug products to regulatory agencies, including type, date, and status.",
+    "tags": [
+      "drug_submissions",
+      "regulatory_submission",
+      "agency_submission",
+      "product_submission",
+      "submission_records",
+      "pharma_registry"
+    ]
+  },
+  "new_data.submission_document": {
+    "description": "Association table linking submissions to related documents.",
+    "tags": [
+      "submission_document_association",
+      "many_to_many",
+      "linking_table",
+      "submission",
+      "document"
+    ]
+  },
+  "new_data.supplier": {
+    "description": "Table containing supplier information including identification, contact details, and operational status.",
+    "tags": [
+      "supplier_management",
+      "contact_information",
+      "supply_chain",
+      "vendor_directory"
+    ]
+  },
+  "new_data.supplier_material": {
+    "description": "Links suppliers to the materials they provide, including supplier SKU, lead time, and approval status.",
+    "tags": [
+      "supplier",
+      "material",
+      "supply_chain",
+      "inventory",
+      "sku",
+      "lead_time",
+      "approval"
+    ]
+  },
+  "new_data.training_course": {
+    "description": "Represents a training course offering, including its unique identifier, code, title, optional associated document, and optional retraining interval.",
+    "tags": [
+      "training",
+      "course",
+      "education",
+      "retrain_interval",
+      "document_reference"
+    ]
+  },
+  "new_data.training_record": {
+    "description": "Tracks the completion of training courses by employees, including dates, expiration, and status.",
+    "tags": [
+      "employee_training",
+      "training_completion",
+      "training_history",
+      "course_records",
+      "compliance_training",
+      "employee_records"
+    ]
+  },
+  "new_data.user_role": {
+    "description": "Links application users to their assigned roles.",
+    "tags": [
+      "user_role",
+      "many_to_many",
+      "role_assignment",
+      "permissions",
+      "authorization"
+    ]
+  },
+  "new_data.work_order": {
+    "description": "Represents a scheduled manufacturing or processing task for a specific product at a given site, with optional formulation details, planned quantity, and status information.",
+    "tags": [
+      "manufacturing",
+      "work_order",
+      "production_plan",
+      "site",
+      "product",
+      "schedule",
+      "status"
+    ]
   }
 }

@@ -1,7 +1,7 @@
 import os
 import json
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from openai import OpenAI
 
@@ -38,8 +38,8 @@ def enforce_limit(sql: str, default_limit: int = 100) -> str:
     return sql.rstrip().rstrip(";") + f" LIMIT {default_limit};"
 
 
-def run_sql(sql: str) -> Dict[str, Any]:
-    with get_connection() as conn:
+def run_sql(sql: str, db_url: Optional[str] = None, schema: Optional[str] = None) -> Dict[str, Any]:
+    with get_connection(db_url=db_url, schema=schema) as conn:
         with conn.cursor() as cur:
             cur.execute(sql)
             rows = cur.fetchall()
@@ -119,23 +119,39 @@ def build_context_from_hits(hits: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {"tables": tables}
 
 
-def answer_nl(question: str, model: str = "openai/gpt-oss-20b", top_k: int = 8) -> Dict[str, Any]:
+def answer_nl(
+    question: str,
+    model: str = "openai/gpt-oss-20b",
+    top_k: int = 8,
+    db_url: Optional[str] = None,
+    schema: Optional[str] = None,
+) -> Dict[str, Any]:
     load_env()
     default_limit = int(os.getenv("DEFAULT_LIMIT", "100"))
 
     retriever = SchemaRetriever()
-    hits = retriever.search(question, k=top_k)
+    schemas = [schema] if schema else None
+    hits = retriever.search(question, k=top_k, schemas=schemas)
     context = build_context_from_hits(hits)
 
     client = get_groq_client()
 
-    plan = llm_plan(client, context, question, model=model)
-    sql = llm_sql(client, context, question, plan, model=model)
+    last_error: Optional[Exception] = None
+    for attempt in range(3):
+        try:
+            plan = llm_plan(client, context, question, model=model)
+            sql = llm_sql(client, context, question, plan, model=model)
 
-    if not is_readonly_sql(sql):
-        raise ValueError(f"Generated SQL is not read-only. Refusing.\nSQL was:\n{sql}")
+            if not is_readonly_sql(sql):
+                raise ValueError(f"Generated SQL is not read-only. Refusing.\nSQL was:\n{sql}")
 
-    sql = enforce_limit(sql, default_limit=default_limit)
-    result = run_sql(sql)
+            sql = enforce_limit(sql, default_limit=default_limit)
+            result = run_sql(sql, db_url=db_url, schema=schema)
 
-    return {"retrieved": hits, "context": context, "plan": plan, "sql": sql, "result": result}
+            return {"retrieved": hits, "context": context, "plan": plan, "sql": sql, "result": result}
+        except Exception as exc:
+            last_error = exc
+            if attempt == 2:
+                raise
+
+    raise last_error

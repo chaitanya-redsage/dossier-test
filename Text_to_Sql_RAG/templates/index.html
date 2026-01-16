@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Connect Database</title>
+    <style>
+      :root {
+        --bg: #0f1a1f;
+        --card: #1a2a32;
+        --accent: #f6c453;
+        --text: #f3f6f7;
+        --muted: #a9b3b8;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Mono", "Courier New", monospace;
+        background: radial-gradient(1200px 600px at 20% -10%, #1f3b45 0%, #0f1a1f 60%);
+        color: var(--text);
+      }
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 56px 20px 80px;
+      }
+      h1 {
+        font-size: 30px;
+        margin: 0 0 12px;
+        letter-spacing: 0.5px;
+      }
+      p.lede {
+        margin: 0 0 28px;
+        color: var(--muted);
+      }
+      form {
+        background: var(--card);
+        border: 1px solid #2a3b42;
+        padding: 18px;
+        border-radius: 12px;
+        display: grid;
+        gap: 12px;
+      }
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #354950;
+        background: #0f1519;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 14px;
+      }
+      button {
+        justify-self: start;
+        background: var(--accent);
+        color: #1f1b12;
+        border: none;
+        padding: 10px 16px;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      #process-db-btn {
+        background: #2dd4bf;
+        color: #08201e;
+      }
+      .error {
+        color: #ffb5b5;
+        background: #3a1c1c;
+        border: 1px solid #603030;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 14px;
+      }
+      .status {
+        color: #c8f2df;
+        background: #173026;
+        border: 1px solid #2c5642;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Connect Database</h1>
+      <p class="lede">Provide a Postgres database URL to verify access before entering the chat.</p>
+      <form id="connect-form">
+        <label for="saved-db-url">Saved database URLs</label>
+        <select id="saved-db-url" name="saved-db-url">
+          <option value="">Select a saved URL</option>
+        </select>
+        <label for="db-url">Database URL</label>
+        <input id="db-url" name="db-url" type="text" placeholder="postgresql://user:pass@host:5432/dbname" />
+        <label for="schema-select">Schema</label>
+        <select id="schema-select" name="schema-select" disabled>
+          <option value="">Verify a database to load schemas</option>
+        </select>
+        <div class="button-row">
+          <button id="verify-btn" type="submit">Verify & Load Schemas</button>
+          <button id="process-db-btn" type="button">Process selected schema</button>
+          <button id="continue-btn" type="button">Continue to chat</button>
+        </div>
+      </form>
+      <div id="error" class="error" style="display:none;"></div>
+      <div id="status" class="status" style="display:none;"></div>
+    </main>
+    <script>
+      const form = document.getElementById("connect-form");
+      const verifyBtn = document.getElementById("verify-btn");
+      const processBtn = document.getElementById("process-db-btn");
+      const errBox = document.getElementById("error");
+      const statusBox = document.getElementById("status");
+      const dbUrlEl = document.getElementById("db-url");
+      const savedDbSelect = document.getElementById("saved-db-url");
+      const schemaSelect = document.getElementById("schema-select");
+      const continueBtn = document.getElementById("continue-btn");
+      continueBtn.disabled = true;
+
+      async function loadSavedDbUrls() {
+        try {
+          const resp = await fetch("/api/db-urls");
+          const data = await resp.json();
+          if (!resp.ok) {
+            throw new Error(data.detail || "Failed to load saved URLs.");
+          }
+          savedDbSelect.innerHTML = '<option value="">Select a saved URL</option>';
+          (data.db_urls || []).forEach((url) => {
+            const opt = document.createElement("option");
+            opt.value = url;
+            opt.textContent = url;
+            savedDbSelect.appendChild(opt);
+          });
+        } catch (err) {
+          setError(err.message || "Unable to load saved URLs.");
+        }
+      }
+
+      function setSchemas(schemas) {
+        schemaSelect.innerHTML = "";
+        if (!schemas || schemas.length === 0) {
+          schemaSelect.appendChild(new Option("No schemas found", ""));
+          schemaSelect.disabled = true;
+          continueBtn.disabled = true;
+          return;
+        }
+        schemas.forEach((schema) => {
+          schemaSelect.appendChild(new Option(schema, schema));
+        });
+        schemaSelect.disabled = false;
+        continueBtn.disabled = false;
+      }
+
+      function setError(msg) {
+        if (msg) {
+          errBox.textContent = msg;
+          errBox.style.display = "block";
+        } else {
+          errBox.textContent = "";
+          errBox.style.display = "none";
+        }
+      }
+
+      function setStatus(msg) {
+        if (msg) {
+          statusBox.textContent = msg;
+          statusBox.style.display = "block";
+        } else {
+          statusBox.textContent = "";
+          statusBox.style.display = "none";
+        }
+      }
+
+      savedDbSelect.addEventListener("change", () => {
+        if (savedDbSelect.value) {
+          dbUrlEl.value = savedDbSelect.value;
+        }
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const dbUrl = dbUrlEl.value.trim();
+        if (!dbUrl) {
+          setError("Please enter a database URL.");
+          return;
+        }
+        setError("");
+        setStatus("Verifying database connection and loading schemas...");
+        verifyBtn.disabled = true;
+        schemaSelect.disabled = true;
+        continueBtn.disabled = true;
+        try {
+          const resp = await fetch("/api/verify-db", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ db_url: dbUrl }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) {
+            throw new Error(data.detail || data.error || "Request failed");
+          }
+          setStatus(data.message || "Verified.");
+          setSchemas(data.schemas || []);
+          loadSavedDbUrls();
+        } catch (err) {
+          setError(err.message || "Unexpected error");
+          setStatus("");
+        } finally {
+          verifyBtn.disabled = false;
+        }
+      });
+
+      continueBtn.addEventListener("click", async () => {
+        const selectedSchema = schemaSelect.value;
+        if (!selectedSchema) {
+          setError("Please select a schema before continuing.");
+          return;
+        }
+        setError("");
+        setStatus("Saving schema selection...");
+        continueBtn.disabled = true;
+        try {
+          const resp = await fetch("/api/select-schema", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ schema: selectedSchema }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) {
+            throw new Error(data.detail || data.error || "Request failed");
+          }
+          window.location.href = "/chat";
+        } catch (err) {
+          setError(err.message || "Unexpected error");
+          setStatus("");
+        } finally {
+          continueBtn.disabled = false;
+        }
+      });
+
+      processBtn.addEventListener("click", async () => {
+        const selectedSchema = schemaSelect.value;
+        if (!selectedSchema) {
+          setError("Please select a schema before processing.");
+          return;
+        }
+        const dbUrl = dbUrlEl.value.trim();
+        if (!dbUrl) {
+          setError("Please enter a database URL to process.");
+          return;
+        }
+        setError("");
+        setStatus("Processing schema metadata and indexing into Qdrant...");
+        processBtn.disabled = true;
+        try {
+          const selectResp = await fetch("/api/select-schema", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ schema: selectedSchema }),
+          });
+          const selectData = await selectResp.json();
+          if (!selectResp.ok) {
+            throw new Error(selectData.detail || selectData.error || "Schema selection failed");
+          }
+          const resp = await fetch("/api/process-db", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ db_url: dbUrl }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) {
+            throw new Error(data.detail || data.error || "Request failed");
+          }
+          setStatus(data.message || "Done.");
+        } catch (err) {
+          setError(err.message || "Unexpected error");
+          setStatus("");
+        } finally {
+          processBtn.disabled = false;
+        }
+      });
+
+      loadSavedDbUrls();
+    </script>
+  </body>
+</html>

@@ -1,6 +1,8 @@
-psycopg2-binary==2.9.9
+psycopg[binary]==3.3.2
 python-dotenv==1.0.1
 openai>=1.40.0
 qdrant-client==1.10.1
 sentence-transformers==3.0.1
 numpy==1.26.4
+fastapi==0.115.0
+uvicorn==0.30.6

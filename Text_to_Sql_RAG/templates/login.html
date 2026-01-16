@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome - Text to SQL RAG</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+      :root {
+        --night: #0b1416;
+        --forest: #122022;
+        --moss: #93c49d;
+        --clay: #e9a07c;
+        --haze: #f5efe4;
+        --ink: #0b0f0b;
+        --muted: #9aacaa;
+        --card: #fdf7ee;
+        --stroke: #b2c0b5;
+        --shadow: 0 30px 80px rgba(11, 20, 22, 0.35);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(900px 600px at 10% -20%, #28464f 0%, transparent 60%),
+          radial-gradient(1000px 600px at 90% -10%, #32584d 0%, transparent 62%),
+          linear-gradient(160deg, #0b1416 0%, #0f1a1c 40%, #152423 100%);
+        min-height: 100vh;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(200px 120px at 15% 20%, rgba(233, 160, 124, 0.25) 0%, transparent 70%),
+          radial-gradient(220px 160px at 80% 35%, rgba(147, 196, 157, 0.18) 0%, transparent 70%),
+          linear-gradient(transparent, rgba(10, 16, 17, 0.65));
+        pointer-events: none;
+        animation: glow 10s ease-in-out infinite alternate;
+      }
+      main {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 56px 24px 80px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 40px;
+        align-items: center;
+      }
+      .brand {
+        color: var(--haze);
+        animation: rise 0.6s ease-out both;
+      }
+      .brand h1 {
+        font-size: clamp(36px, 4vw, 52px);
+        letter-spacing: -0.5px;
+        margin: 0 0 18px;
+      }
+      .brand p {
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.6;
+        margin: 0 0 24px;
+      }
+      .metrics {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      .metric {
+        padding: 10px 14px;
+        border: 1px solid rgba(147, 196, 157, 0.35);
+        border-radius: 999px;
+        font-size: 13px;
+        color: var(--haze);
+        background: rgba(18, 32, 34, 0.6);
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: var(--shadow);
+        animation: rise 0.6s ease-out both;
+        animation-delay: 0.1s;
+      }
+      .tabs {
+        display: inline-flex;
+        background: #e6dfd4;
+        border-radius: 999px;
+        padding: 4px;
+        gap: 4px;
+      }
+      .tabs button {
+        border: none;
+        background: transparent;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-weight: 600;
+        cursor: pointer;
+        color: #4b4b3c;
+      }
+      .tabs button.active {
+        background: var(--forest);
+        color: var(--haze);
+      }
+      h2 {
+        font-size: 22px;
+        margin: 18px 0 8px;
+      }
+      form {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+      }
+      label {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #5d655b;
+      }
+      input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #c9c4b8;
+        font-size: 15px;
+        font-family: inherit;
+        background: #fffdf7;
+      }
+      .submit-btn {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        background: var(--clay);
+        color: #4c1d0f;
+      }
+      .note {
+        font-size: 13px;
+        color: #6f746b;
+        line-height: 1.5;
+        margin: 0;
+      }
+      .hidden {
+        display: none;
+      }
+      .status {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 14px;
+      }
+      .status.error {
+        background: #fbe3df;
+        border: 1px solid #f0bdb1;
+        color: #7a2f20;
+      }
+      .status.ok {
+        background: #e4f3e9;
+        border: 1px solid #bcd8c2;
+        color: #215536;
+      }
+      .password-hint {
+        font-size: 12px;
+        color: #7a7f75;
+      }
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes glow {
+        0% { opacity: 0.7; }
+        100% { opacity: 1; }
+      }
+      @media (max-width: 960px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+        .card {
+          order: -1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="brand">
+        <h1>Text to SQL</h1>
+      
+      </section>
+      <section class="card">
+        <div class="tabs" role="tablist">
+          <button type="button" class="active" data-mode="login" aria-selected="true">Log in</button>
+          <button type="button" data-mode="signup" aria-selected="false">Sign up</button>
+        </div>
+        <h2 id="form-title">Welcome back</h2>
+        <p class="note" id="form-subtitle">Enter your credentials to continue to your workspace.</p>
+        <div id="status" class="status hidden"></div>
+        <form id="login-form">
+          <div>
+            <label for="login-email">Email</label>
+            <input id="login-email" type="email" placeholder="you@company.com" required />
+          </div>
+          <div>
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" placeholder="********" required />
+          </div>
+          <button class="submit-btn" type="submit">Log in</button>
+        </form>
+        <form id="signup-form" class="hidden">
+          <div>
+            <label for="signup-name">Full name</label>
+            <input id="signup-name" type="text" placeholder="Alex Rivera" required />
+          </div>
+          <div>
+            <label for="signup-email">Work email</label>
+            <input id="signup-email" type="email" placeholder="alex@company.com" required />
+          </div>
+          <div>
+            <label for="signup-password">Password</label>
+            <input id="signup-password" type="password" placeholder="Create a strong password" required />
+            <div class="password-hint">At least 8 characters.</div>
+          </div>
+          <button class="submit-btn" type="submit">Create account</button>
+          <p class="note">By creating an account, you agree to the workspace guidelines and privacy policy.</p>
+        </form>
+      </section>
+    </main>
+    <script>
+      const tabs = document.querySelectorAll("[data-mode]");
+      const loginForm = document.getElementById("login-form");
+      const signupForm = document.getElementById("signup-form");
+      const formTitle = document.getElementById("form-title");
+      const formSubtitle = document.getElementById("form-subtitle");
+      const statusBox = document.getElementById("status");
+
+      function setStatus(message, type) {
+        if (!message) {
+          statusBox.textContent = "";
+          statusBox.className = "status hidden";
+          return;
+        }
+        statusBox.textContent = message;
+        statusBox.className = `status ${type || "ok"}`;
+      }
+
+      function switchMode(mode) {
+        tabs.forEach((tab) => {
+          const active = tab.dataset.mode === mode;
+          tab.classList.toggle("active", active);
+          tab.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        if (mode === "signup") {
+          loginForm.classList.add("hidden");
+          signupForm.classList.remove("hidden");
+          formTitle.textContent = "Create your account";
+          formSubtitle.textContent = "Set up a profile and start connecting your data.";
+        } else {
+          signupForm.classList.add("hidden");
+          loginForm.classList.remove("hidden");
+          formTitle.textContent = "Welcome back";
+          formSubtitle.textContent = "Enter your credentials to continue to your workspace.";
+        }
+        setStatus("");
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => switchMode(tab.dataset.mode));
+      });
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        setStatus("Signing you in...", "ok");
+        const email = document.getElementById("login-email").value.trim();
+        const password = document.getElementById("login-password").value;
+        try {
+          const resp = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) {
+            throw new Error(data.detail || "Login failed.");
+          }
+          setStatus("Logged in. Redirecting...", "ok");
+          window.location.href = "/";
+        } catch (err) {
+          setStatus(err.message || "Login failed.", "error");
+        }
+      });
+
+      signupForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        setStatus("Creating your account...", "ok");
+        const name = document.getElementById("signup-name").value.trim();
+        const email = document.getElementById("signup-email").value.trim();
+        const password = document.getElementById("signup-password").value;
+        try {
+          const resp = await fetch("/api/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) {
+            throw new Error(data.detail || "Signup failed.");
+          }
+          setStatus("Account created. Redirecting...", "ok");
+          window.location.href = "/";
+        } catch (err) {
+          setStatus(err.message || "Signup failed.", "error");
+        }
+      });
+    </script>
+  </body>
+</html>
