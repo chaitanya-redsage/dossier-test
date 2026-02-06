@@ -1,0 +1,5 @@
+[
+  "Fix the figure caption on page 3; it should mention 2024 not 2023.",
+  {"comment": "Executive summary numbers must match the Q4 table."},
+  {"issue": "Spelling of Acme is wrong in the footer."}
+]

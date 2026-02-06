@@ -1,0 +1,49 @@
+{
+  "summary": {
+    "total": 3,
+    "fixed": 3,
+    "not_fixed": 0,
+    "unclear": 0
+  },
+  "results": [
+    {
+      "status": "fixed",
+      "page": 1,
+      "location": "Executive Summary",
+      "evidence": "Revenue was $4.3M in 2024",
+      "what_was_wrong": "Incorrect revenue number",
+      "reason": "The revenue number in the Executive Summary now matches the expected value of $4.3M for 2024. The change from $4.1M in 2023 to $4.3M in 2024 aligns with the comment's requirement.",
+      "confidence": 1,
+      "comment": "Executive summary numbers must match the Q4 table (should say 2024 revenue $4.3M).",
+      "candidates": [
+        1
+      ]
+    },
+    {
+      "status": "fixed",
+      "page": 1,
+      "location": "Figure 1 caption",
+      "evidence": "2024 trends by region",
+      "what_was_wrong": "used 2023 instead of 2024",
+      "reason": "The year in the Figure 1 caption has been updated from 2023 to 2024, matching the requested change. The surrounding text also reflects an updated year, adding to the confidence in this fix.",
+      "confidence": 1,
+      "comment": "Fix Figure 1 caption to use 2024, not 2023.",
+      "candidates": [
+        1
+      ]
+    },
+    {
+      "status": "fixed",
+      "page": 1,
+      "location": "footer",
+      "evidence": "ACME Corp footer appears here",
+      "what_was_wrong": "footer not in all caps",
+      "reason": "The footer now uses 'ACME' in all caps as requested. The change from 'Acme Corp' to 'ACME Corp' addresses the issue.",
+      "confidence": 1,
+      "comment": "Footer should use ACME in all caps.",
+      "candidates": [
+        1
+      ]
+    }
+  ]
+}

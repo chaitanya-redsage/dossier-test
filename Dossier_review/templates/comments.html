@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Comments Manager</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>Comments</h1>
+      <p>Manage saved review comments for the current reference PDF.</p>
+      <p class="meta">Reference PDF: <strong>{{ old_pdf_name or 'None' }}</strong></p>
+      <p class="meta">Last edit: {{ last_edit_at or 'never' }}</p>
+      <p class="meta">Last run: {{ last_run_at or 'never' }}</p>
+      <p class="meta">
+        Status: {{ 'Checked after last edit' if run_after_edit else 'Not checked after last edit' }}
+      </p>
+      <p><a href="/">Back to reviewer</a></p>
+    </header>
+
+    <section class="card">
+      <form action="/comments/add" method="post">
+        <label>
+          Add comment
+          <textarea name="comment_text" rows="4" placeholder="Enter a new comment..."></textarea>
+        </label>
+        <button type="submit">Add</button>
+      </form>
+      <form action="/comments/merge" method="post" class="inline" style="margin-top:12px;">
+        <button type="submit">Merge similar comments</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Saved Comments</h2>
+      {% if comments %}
+        {% for c in comments %}
+          <div class="result">
+            <div class="row"><span class="label">Comment</span><span>{{ c }}</span></div>
+            <form action="/comments/delete" method="post">
+              <input type="hidden" name="idx" value="{{ loop.index0 }}" />
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No saved comments.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>

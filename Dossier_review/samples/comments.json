@@ -1,0 +1,5 @@
+[
+  "Executive summary numbers must match the Q4 table (should say 2024 revenue $4.3M).",
+  {"comment": "Fix Figure 1 caption to use 2024, not 2023."},
+  {"issue": "Footer should use ACME in all caps."}
+]

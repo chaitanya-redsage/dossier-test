@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDF Reviewer</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script defer src="/static/app.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>PDF Reviewer</h1>
+      <p>Upload comments and PDFs. The reviewer checks fixes and explains what is wrong.</p>
+      <p><a href="/comments">Manage comments</a></p>
+    </header>
+
+    <section class="card">
+      <form id="review-form" action="/review" method="post" enctype="multipart/form-data">
+        <label>
+          Comments (optional, one per line)
+          <textarea name="comments_text" rows="6" placeholder="Example: Fix the sterility test status on page 2."></textarea>
+          <small>If left empty, saved comments for the selected old PDF will be used.</small>
+        </label>
+        <label class="dropbox">
+          <input id="new-pdf-input" type="file" name="new_pdf" accept="application/pdf" required />
+          <span class="dropbox-title">Drop your new PDF here</span>
+          <span class="dropbox-sub">or click to browse</span>
+          <span id="new-pdf-name" class="dropbox-file">No file selected</span>
+        </label>
+        <input type="hidden" name="old_pdf_name" value="{{ old_pdfs[0] if old_pdfs else '' }}" />
+        <label class="inline">
+          <input type="checkbox" name="bypass_candidates" />
+          Bypass semantic search (send all pages)
+        </label>
+        <button type="submit">Review</button>
+      </form>
+    </section>
+
+    {% if result %}
+    <section class="card">
+      <h2>Overall</h2>
+      <p class="status {{ 'ok' if overall_ok else 'bad' }}">
+        {{ 'All issues fixed' if overall_ok else 'Some issues not fixed' }}
+      </p>
+      <div class="result">
+        <div class="row"><span class="label">Total</span><span>{{ result["summary"]["total"] }}</span></div>
+        <div class="row"><span class="label">Fixed</span><span>{{ result["summary"]["fixed"] }}</span></div>
+        <div class="row"><span class="label">Not fixed</span><span>{{ result["summary"]["not_fixed"] }}</span></div>
+        <div class="row"><span class="label">Unclear</span><span>{{ result["summary"]["unclear"] }}</span></div>
+      </div>
+      {% if result["summary"]["not_fixed_comments"] %}
+      <div class="result">
+        <div class="row"><span class="label">Not fixed comments</span></div>
+        <ol>
+          {% for c in result["summary"]["not_fixed_comments"] %}
+          <li>{{ c }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <h2>Details</h2>
+      {% for r in result["results"] %}
+        <div class="result">
+          <div class="row"><span class="label">Comment</span><span>{{ r["comment"] }}</span></div>
+          <div class="row"><span class="label">Status</span><span>{{ r["status"] }}</span></div>
+          <div class="row"><span class="label">What was wrong</span><span>{{ r.get("what_was_wrong", "") }}</span></div>
+          <div class="row"><span class="label">Page</span><span>{{ r.get("page", "") }}</span></div>
+          <div class="row"><span class="label">Location</span><span>{{ r.get("location", "") }}</span></div>
+          <div class="row"><span class="label">Evidence</span><span>{{ r.get("evidence", "") }}</span></div>
+          <div class="row"><span class="label">Reason</span><span>{{ r.get("reason", "") }}</span></div>
+        </div>
+      {% endfor %}
+    </section>
+
+    {% endif %}
+  </main>
+</body>
+</html>

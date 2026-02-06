@@ -1,0 +1,13 @@
+[
+  "Update sterility test from PENDING to PASSED once results are in.",
+  "Mark GMP audit as complete and include QA release signature.",
+  "Impurity A must be below 0.10% per spec.",
+  "Add barcode and extend expiration to 2026-06.",
+  "Increase binder to 3% and mix time to 10 min.",
+  "Update stability table with latest potency values.",
+  "Seal integrity should be PASS with reduced leak rate.",
+  "Swab result must be at or below 10 ppm.",
+  "CoA should be received before raw material release.",
+  "Endotoxin must be <= 0.25 EU/mL to pass.",
+  "expiry date should be explicitly stated."
+]
